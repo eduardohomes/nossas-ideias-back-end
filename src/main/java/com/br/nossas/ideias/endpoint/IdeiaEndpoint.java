@@ -29,7 +29,7 @@ public class IdeiaEndpoint {
     private final FavoritaRepository favoritaDAO;
     private final UserRepository userDAO;
 
-	public IdeiaEndpoint(IdeiaRepository ideiaDAO, FavoritaRepository favoritaDAO, UserRepository userDAO, User user) {
+	public IdeiaEndpoint(IdeiaRepository ideiaDAO, FavoritaRepository favoritaDAO, UserRepository userDAO) {
         this.ideiaDAO = ideiaDAO;
         this.favoritaDAO = favoritaDAO;
         this.userDAO = userDAO;        
@@ -114,7 +114,7 @@ public class IdeiaEndpoint {
         Favorita favorita = new Favorita();
         User user = userDAO.findByPassword(token);
         
-        favorita.setIdIdeia(ideiaDAO.getMaxId());
+        ///favorita.setIdIdeia(ideiaDAO.getMaxId());
         favorita.setIdUser(user.getId());
         favorita.setMarcada("N");
         favoritaDAO.save(favorita);

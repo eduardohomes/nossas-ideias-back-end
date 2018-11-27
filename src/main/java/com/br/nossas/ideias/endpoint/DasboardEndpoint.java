@@ -12,10 +12,8 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import java.util.List;
-<<<<<<< 0d9010e3c3be579715c67ff69b99877dcfe4e09b
 
 import org.springframework.data.domain.Pageable;
-=======
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
