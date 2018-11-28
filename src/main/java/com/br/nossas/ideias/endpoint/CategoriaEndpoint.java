@@ -18,8 +18,8 @@ public class CategoriaEndpoint {
     }
 
     @GetMapping
-    public ResponseEntity<?> listAll(Pageable pageable) {
-        return new ResponseEntity<>(categoriaRepositoryDAO.findAll(pageable),HttpStatus.OK);
+    public ResponseEntity<?> listAll() {
+        return new ResponseEntity<>(categoriaRepositoryDAO.findAll(),HttpStatus.OK);
     }
 
 }

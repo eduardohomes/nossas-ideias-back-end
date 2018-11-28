@@ -15,6 +15,6 @@ public interface FavoritaRepository extends JpaRepository<Favorita, Long> {
 
     Favorita findByIdIdeia(Long idIdeia);
 
-    @Query(value = "select * from favorita f join user u on f.id_user = u.id where u.username = ?1", nativeQuery = true)
-    List<Favorita> getFindByIdUsername(String username);
+    @Query(value = "select f.* from nossaideia.favorita f join nossaideia.ideia i on f.id_ideia = i.id join nossaideia.user u on f.id_user = u.id", nativeQuery = true)
+    List<Favorita> getFindByUsername(String username);
 }

@@ -1,18 +1,15 @@
 package com.br.nossas.ideias.model;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.*;
 
 @Entity
-public class Ideia extends AbstractEntity{
+public class Ideia {
 
-    @NotEmpty
     private String nome;
     private String descricao;
     private String comentarioAvaliador;
     private String ativa;
     private String situacao;
-    private Long idCategoria;
 
     public String getSituacao() {
         return situacao;
@@ -54,12 +51,32 @@ public class Ideia extends AbstractEntity{
         this.ativa = ativa;
     }
 
-    public Long getIdCategoria() {
-        return idCategoria;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne (cascade=CascadeType.ALL)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setIdCategoria(Long idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setId(Long id) {
+        this.id = id;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    @Override
+    public String toString() {
+        return "Ideia [id=" + id + ", nome=" + nome + "]";
+    }
 }

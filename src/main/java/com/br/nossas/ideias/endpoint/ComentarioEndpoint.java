@@ -28,8 +28,8 @@ public class ComentarioEndpoint {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<?> listAll(Pageable pageable) {
-        return new ResponseEntity<>(comentarioDAO.findAll(pageable),HttpStatus.OK);
+    public ResponseEntity<?> listAll() {
+        return new ResponseEntity<>(comentarioDAO.findAll(),HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")

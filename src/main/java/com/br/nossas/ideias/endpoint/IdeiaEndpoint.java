@@ -37,57 +37,10 @@ public class IdeiaEndpoint {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<?> listAll(Pageable pageable) {    	
-    	return new ResponseEntity<>(ideiaDAO.findAll(pageable),HttpStatus.OK);    	
+    public ResponseEntity<?> listAll() {
+    	return new ResponseEntity<>(ideiaDAO.findAll(),HttpStatus.OK);
     }
 
-    @PostMapping()
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> findByUsername(@Valid @RequestBody User user) {
-
-        JSONArray jsonArray = new JSONArray();
-
-        List<Ideia> ideiaList = ideiaDAO.findAll();
-
-        List<Favorita> favoritaList = favoritaDAO.getFindByIdUsername(user.getUsername());
-
-        if(favoritaList != null) {
-
-            for (int i = 0; i < ideiaList.size(); i++) {
-
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("id", ideiaList.get(i).getId());
-                jsonObject.put("nome", ideiaList.get(i).getNome());
-                jsonObject.put("descricao", ideiaList.get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaList.get(i).getComentarioAvaliador());
-                jsonObject.put("ativa", ideiaList.get(i).getAtiva());
-                jsonObject.put("situacao", ideiaList.get(i).getSituacao());
-
-                long id = ideiaList.get(i).getId();
-
-                int x = 0;
-                String marcada = "";
-
-                for (int j = x; j < favoritaList.size(); j++) {
-                    if(favoritaList.get(j).getIdIdeia().equals(id)) {
-                        marcada =  favoritaList.get(j).getMarcada();
-                    }
-                }
-
-                if (marcada.equals("N")) {
-                    jsonObject.put("marcada", marcada);
-                } else {
-                	jsonObject.put("marcada", "S");
-                }
-
-                jsonArray.add(jsonObject);
-            }
-        }
-
-        return new ResponseEntity<>(jsonArray, HttpStatus.OK);
-    }
-    
     @CrossOrigin
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getIdeiaById(@PathVariable("id") Long id) {

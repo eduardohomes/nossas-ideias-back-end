@@ -23,8 +23,8 @@ public class VotoEndpoint {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<?> listAll(Pageable pageable) {
-        return new ResponseEntity<>(votoDAO.findAll(pageable),HttpStatus.OK);
+    public ResponseEntity<?> listAll() {
+        return new ResponseEntity<>(votoDAO.findAll(),HttpStatus.OK);
     }
 
     @PostMapping
