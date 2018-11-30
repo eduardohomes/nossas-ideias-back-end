@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface IdeiaRepository extends JpaRepository<Ideia, Long> {
 
 	@Query(value = "SELECT * FROM nossaideia.ideia where situacao <> " +
-            "'Pendente' ORDER BY id DESC LIMIT 3", nativeQuery = true)
-    List<Ideia> findByUltimasCadastradas();
+            "'Em Colaboração' ORDER BY id DESC LIMIT 3", nativeQuery = true)
+    List<Ideia> findByUltimasIdeias();
 
 	@Query(value = "select ide.* \n" +
             "from nossaideia.voto voto\n" +
@@ -23,12 +23,10 @@ public interface IdeiaRepository extends JpaRepository<Ideia, Long> {
             "group by voto.id_ideia \n" +
             "having count(voto.id_ideia)>0\n" +
             "ORDER BY count(voto.id_ideia) desc LIMIT 5", nativeQuery = true)
-    List<Ideia> findByMaisVotadas();
+    List<Ideia> findByEmAlta();
 
-    @Query(value = "select i.* from nossaideia.user u \n" +
-            "left outer join nossaideia.favorita f on f.id_user = u.id \n" +
-            "left outer join nossaideia.ideia i on f.id_ideia = i.id where u.username = ?1", nativeQuery = true)
-    List<String> todasIdeias (String username);
+    @Query(value = "select * from nossaideia.ideia where nome like '%' || ?1 || '%'",nativeQuery = true)
+	List<Ideia> findByIdeia(String nome);
 
     @Query(value = "select max(id) from nossaideia.ideia",nativeQuery = true)
     Long ultimaIdeiaCadastrada ();

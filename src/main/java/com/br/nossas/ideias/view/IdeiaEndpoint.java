@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/ideias")
+@RequestMapping("/api/ideias")
 public class IdeiaEndpoint {
 
     private final IdeiaController ideiaController;
@@ -32,9 +32,9 @@ public class IdeiaEndpoint {
         this.ideiaListOptional = ideiaListOptional;
     }
 
-    @GetMapping
+    @GetMapping(value = "/listaTodasIdeias")
     @CrossOrigin
-    public ResponseEntity<JSONObject> listaTodasIdeias(@RequestHeader("token") String token) {
+    public ResponseEntity<JSONObject> listaTodasIdeias(@RequestHeader("Authorization") String token) {
 
         if (autenticarController.autenticaUsuarioLogado(token) != null) {
 
@@ -46,14 +46,60 @@ public class IdeiaEndpoint {
                 jsonObjectList.put("isAdmin", "N");
             }
 
-            jsonObjectList.put("todasIdeias", ideiaController.listarTodasIdeias());
-            jsonObjectList.put("ultimasCadastradas", ideiaController.ultimasCadastradas());
-            jsonObjectList.put("maisVotadas", ideiaController.maisVotadas());
-
+            //jsonObjectList.put("listarFavoritas", ideiaController.listarFavoritas());
+            //jsonObjectList.put("listaUltimasIdeias", ideiaController.listaUltimasIdeias());
+            jsonObjectList.put("listaEmAlta", ideiaController.listaEmAlta());
+            return new ResponseEntity<>(jsonObjectList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(jsonObjectList, HttpStatus.OK);
+
     }
-    
+
+    @GetMapping(value = "/listaUltimasIdeias")
+    @CrossOrigin
+    public ResponseEntity<JSONObject> listaUltimasIdeias(@RequestHeader("Authorization") String token) {
+
+        if (autenticarController.autenticaUsuarioLogado(token) != null) {
+
+            String username = userController.getUserName(token);
+
+            if (userController.isAdmin(token)) {
+                jsonObjectList.put("isAdmin", "S");
+            } else {
+                jsonObjectList.put("isAdmin", "N");
+            }
+
+            jsonObjectList.put("listaUltimasIdeias", ideiaController.listaUltimasIdeias());
+            return new ResponseEntity<>(jsonObjectList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+    }
+
+    @GetMapping(value = "/listaFavoritas")
+    @CrossOrigin
+    public ResponseEntity<JSONObject> listaFavoritas(@RequestHeader("Authorization") String token) {
+
+        if (autenticarController.autenticaUsuarioLogado(token) != null) {
+
+            String username = userController.getUserName(token);
+
+            if (userController.isAdmin(token)) {
+                jsonObjectList.put("isAdmin", "S");
+            } else {
+                jsonObjectList.put("isAdmin", "N");
+            }
+
+            jsonObjectList.put("listarFavoritas", ideiaController.listarFavoritas());
+            return new ResponseEntity<>(jsonObjectList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+    }
+
     @CrossOrigin
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getIdeiaById(@RequestHeader("token") String token, @PathVariable("id") Long id) {
@@ -64,7 +110,7 @@ public class IdeiaEndpoint {
         return new ResponseEntity<>(ideiaListOptional,HttpStatus.OK);
     }
 
-    @PostMapping
+    /*@PostMapping
     @CrossOrigin
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> save(@Valid @RequestBody Ideia ideia, @RequestHeader("Token") String token) {
@@ -78,7 +124,7 @@ public class IdeiaEndpoint {
         }  else {
             throw new ResourceNotFoundExcepction("Usuario não encontrado");
         }
-    }
+    }*/
 
     @PutMapping
     @CrossOrigin

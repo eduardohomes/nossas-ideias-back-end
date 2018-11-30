@@ -17,7 +17,7 @@ public class UserController {
 
     public boolean isAdmin(String token) {
 
-        boolean admin= userDAO.findByPassword(token).isAdmin();
+        boolean admin= userDAO.findByToken(token).isAdmin();
 
         if(admin)         {
             return true;
@@ -28,7 +28,7 @@ public class UserController {
 
     public String getUserName(String token) {
 
-        User username = userDAO.findByPassword(token);
+        User username = userDAO.findByToken(token);
 
         return username.getUsername();
     }

@@ -3,7 +3,6 @@ package com.br.nossas.ideias.controller;
 import com.br.nossas.ideias.error.ResourceNotFoundExcepction;
 import com.br.nossas.ideias.model.Favorita;
 import com.br.nossas.ideias.model.Ideia;
-import com.br.nossas.ideias.model.User;
 import com.br.nossas.ideias.repository.CategoriaRepository;
 import com.br.nossas.ideias.repository.FavoritaRepository;
 import com.br.nossas.ideias.repository.IdeiaRepository;
@@ -33,49 +32,9 @@ public class IdeiaController {
         this.userController = userController;
     }
 
-    public JSONArray listarTodasIdeias(){
+    public JSONArray listarFavoritas(){
 
-            int tamanho = ideiaRepository.findAll().size();
-
-            if(tamanho > 0) {
-
-                for (int i = 0; i < tamanho; i++) {
-
-                    JSONObject jsonObject = new JSONObject();
-
-                    jsonObject.put("id", ideiaRepository.findAll().get(i).getId());
-                    jsonObject.put("nome", ideiaRepository.findAll().get(i).getNome());
-                    jsonObject.put("descricao", ideiaRepository.findAll().get(i).getDescricao());
-                    jsonObject.put("comentarioAvaliador", ideiaRepository.findAll().get(i).getComentarioAvaliador());
-                    jsonObject.put("ativa", ideiaRepository.findAll().get(i).getAtiva());
-                    jsonObject.put("situacao", ideiaRepository.findAll().get(i).getSituacao());
-
-                    long id = ideiaRepository.findAll().get(i).getId();
-
-                    int x = 0;
-                    String marcada = "";
-
-                    int tamanhoFavorita = favoritaRepository.findAll().size();
-
-                    for (int j = x; j < tamanhoFavorita; j++) {
-                        if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
-                            marcada =  favoritaRepository.findAll().get(j).getMarcada();
-                            if (marcada.equals("N")) {
-                                jsonObject.put("marcada", marcada);
-                            } else {
-                                jsonObject.put("marcada", "S");
-                            }
-                        }
-                    }
-                    jsonArrayTodasIdeias.add(jsonObject);
-                }
-            }
-        return jsonArrayTodasIdeias;
-    }
-
-    public JSONArray ultimasCadastradas(){
-
-        int tamanho = ideiaRepository.findByUltimasCadastradas().size();
+        int tamanho = ideiaRepository.findAll().size();
 
         if(tamanho > 0) {
 
@@ -83,14 +42,54 @@ public class IdeiaController {
 
                 JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("id", ideiaRepository.findByUltimasCadastradas().get(i).getId());
-                jsonObject.put("nome", ideiaRepository.findByUltimasCadastradas().get(i).getNome());
-                jsonObject.put("descricao", ideiaRepository.findByUltimasCadastradas().get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findByUltimasCadastradas().get(i).getComentarioAvaliador());
-                jsonObject.put("ativa", ideiaRepository.findByUltimasCadastradas().get(i).getAtiva());
-                jsonObject.put("situacao", ideiaRepository.findByUltimasCadastradas().get(i).getSituacao());
+                jsonObject.put("id", ideiaRepository.findAll().get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findAll().get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findAll().get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findAll().get(i).getComentarioAvaliador());
+                jsonObject.put("ativa", ideiaRepository.findAll().get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findAll().get(i).getSituacao());
 
-                long id = ideiaRepository.findByUltimasCadastradas().get(i).getId();
+                long id = ideiaRepository.findAll().get(i).getId();
+
+                int x = 0;
+                String marcada = "";
+
+                int tamanhoFavorita = favoritaRepository.findAll().size();
+
+                for (int j = x; j < tamanhoFavorita; j++) {
+                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
+                        marcada =  favoritaRepository.findAll().get(j).getMarcada();
+                        if (marcada.equals("N")) {
+                            jsonObject.put("marcada", marcada);
+                        } else {
+                            jsonObject.put("marcada", "S");
+                        }
+                    }
+                }
+                jsonArrayTodasIdeias.add(jsonObject);
+            }
+        }
+        return jsonArrayTodasIdeias;
+    }
+
+    public JSONArray listaUltimasIdeias(){
+
+        int tamanho = ideiaRepository.findByUltimasIdeias().size();
+
+        if(tamanho > 0) {
+
+            for (int i = 0; i < tamanho; i++) {
+
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.put("id", ideiaRepository.findByUltimasIdeias().get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByUltimasIdeias().get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByUltimasIdeias().get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByUltimasIdeias().get(i).getComentarioAvaliador());
+                jsonObject.put("ativa", ideiaRepository.findByUltimasIdeias().get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByUltimasIdeias().get(i).getSituacao());
+
+                long id = ideiaRepository.findByUltimasIdeias().get(i).getId();
 
                 int x = 0;
                 String marcada = "";
@@ -113,9 +112,9 @@ public class IdeiaController {
         return jsonArrayUltimasIdeiasCadastradas;
     }
 
-    public JSONArray maisVotadas(){
+    public JSONArray listaEmAlta(){
 
-        int tamanho = ideiaRepository.findByMaisVotadas().size();
+        int tamanho = ideiaRepository.findByEmAlta().size();
 
         if(tamanho > 0) {
 
@@ -123,14 +122,14 @@ public class IdeiaController {
 
                 JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("id", ideiaRepository.findByMaisVotadas().get(i).getId());
-                jsonObject.put("nome", ideiaRepository.findByMaisVotadas().get(i).getNome());
-                jsonObject.put("descricao", ideiaRepository.findByMaisVotadas().get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findByMaisVotadas().get(i).getComentarioAvaliador());
-                jsonObject.put("ativa", ideiaRepository.findByMaisVotadas().get(i).getAtiva());
-                jsonObject.put("situacao", ideiaRepository.findByMaisVotadas().get(i).getSituacao());
+                jsonObject.put("id", ideiaRepository.findByEmAlta().get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByEmAlta().get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByEmAlta().get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByEmAlta().get(i).getComentarioAvaliador());
+                jsonObject.put("ativa", ideiaRepository.findByEmAlta().get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByEmAlta().get(i).getSituacao());
 
-                long id = ideiaRepository.findByMaisVotadas().get(i).getId();
+                long id = ideiaRepository.findByEmAlta().get(i).getId();
 
                 int x = 0;
                 String marcada = "";
@@ -162,7 +161,46 @@ public class IdeiaController {
         return ideia;
     }
 
-    public void salvaIdeia(Ideia ideia, Long idUsuario, boolean isAdmin) {
+    public JSONArray listaBuscaAssunto(String nome){
+
+        int tamanho = ideiaRepository.findByIdeia(nome).size();
+
+        if(tamanho > 0) {
+
+            for (int i = 0; i < tamanho; i++) {
+
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.put("id", ideiaRepository.findByIdeia(nome).get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByIdeia(nome).get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByIdeia(nome).get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByIdeia(nome).get(i).getComentarioAvaliador());
+                jsonObject.put("ativa", ideiaRepository.findByIdeia(nome).get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByIdeia(nome).get(i).getSituacao());
+
+                long id = ideiaRepository.findByIdeia(nome).get(i).getId();
+
+                int x = 0;
+                String marcada = "";
+
+                int iFavorita = favoritaRepository.findAll().size();
+
+                for (int j = x; j < iFavorita; j++) {
+                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
+                        marcada =  favoritaRepository.findAll().get(j).getMarcada();
+                        if (marcada.equals("N")) {
+                            jsonObject.put("marcada", marcada);
+                        } else {
+                            jsonObject.put("marcada", "S");
+                        }
+                    }
+                }jsonArrayMaisVotadas.add(jsonObject);
+            }
+        }
+        return jsonArrayMaisVotadas;
+    }
+
+    public void salvaIdeia(Ideia ideia, Long idUsuario) {
 
         ideiaRepository.save(ideia);
         Favorita favorita = new Favorita();
@@ -182,5 +220,6 @@ public class IdeiaController {
             ideiaRepository.save(ideia);
         }
     }
+    
 
 }

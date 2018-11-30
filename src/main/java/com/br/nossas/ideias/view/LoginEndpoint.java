@@ -4,15 +4,17 @@ import com.br.nossas.ideias.controller.AutenticarController;
 import com.br.nossas.ideias.controller.UserController;
 import com.br.nossas.ideias.model.User;
 import com.br.nossas.ideias.repository.UserRepository;
-import com.br.nossas.ideias.service.PasswordEncoderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RestController
+ @RestController
 @RequestMapping("api/user")
 public class LoginEndpoint {
 
@@ -27,9 +29,6 @@ public class LoginEndpoint {
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> findByUsername(@Valid @RequestBody User user) {
-
-        String token = autenticarController.autenticaUsuarioLogin(user);
-
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        return new ResponseEntity<>(autenticarController.autenticaUsuarioLogin(user), HttpStatus.OK);
     }
 }
