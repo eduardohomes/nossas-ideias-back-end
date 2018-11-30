@@ -1,12 +1,9 @@
-package com.br.nossas.ideias.endpoint;
+package com.br.nossas.ideias.view;
 
 
 import com.br.nossas.ideias.error.ResourceNotFoundExcepction;
 import com.br.nossas.ideias.model.Comentario;
-import com.br.nossas.ideias.model.Ideia;
 import com.br.nossas.ideias.repository.ComentarioRepository;
-import com.br.nossas.ideias.repository.IdeiaRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api//comentarios")

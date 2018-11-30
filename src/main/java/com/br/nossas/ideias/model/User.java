@@ -52,5 +52,4 @@ public class User extends AbstractEntity {
         this.admin = admin;
     }
 
-
 }

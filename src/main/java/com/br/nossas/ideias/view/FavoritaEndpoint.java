@@ -1,8 +1,7 @@
-package com.br.nossas.ideias.endpoint;
+package com.br.nossas.ideias.view;
 
 import com.br.nossas.ideias.model.Favorita;
 import com.br.nossas.ideias.repository.FavoritaRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

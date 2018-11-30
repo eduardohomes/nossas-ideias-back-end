@@ -32,5 +32,4 @@ public class Favorita extends AbstractEntity{
     public void setIdUser(Long idUser) {
         this.idUser = idUser;
     }
-
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "categoria")
-public class Categoria  {
+public class Categoria extends AbstractEntity {
 
     @NotEmpty
     @Column(name = "nome")
@@ -21,7 +21,7 @@ public class Categoria  {
     }
 
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -39,5 +39,5 @@ public class Categoria  {
     public String toString() {
         return "Categoria [id=" + id + ", nome=" + nome + ", ideias=" + ideias
                 + "]";
-    }
+    }*/
 }
