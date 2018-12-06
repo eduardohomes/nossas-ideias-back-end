@@ -16,9 +16,13 @@ public class CategoriaEndpoint {
         this.categoriaRepositoryDAO = categoriaRepositoryDAO;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<?> listAll() {
-        return new ResponseEntity<>(categoriaRepositoryDAO.findAll(),HttpStatus.OK);
+            return new ResponseEntity<>(categoriaRepositoryDAO.findAll(),HttpStatus.OK);
     }
+    /*@GetMapping(value = "/listaMaisVotadas")
+    public ResponseEntity<?> maisVotadas() {
+        return new ResponseEntity<>(categoriaRepositoryDAO.,HttpStatus.OK);
+    }*/
 
 }

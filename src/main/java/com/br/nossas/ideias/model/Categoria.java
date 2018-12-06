@@ -11,8 +11,8 @@ import java.util.Set;
 public class Categoria extends AbstractEntity {
 
     @NotEmpty
-    @Column(name = "nome")
     private String nome;
+
     public String getNome() {
         return nome;
     }
@@ -20,24 +20,4 @@ public class Categoria extends AbstractEntity {
         this.nome = nome;
     }
 
-
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @OneToMany(targetEntity = Ideia.class, mappedBy = "categoria")
-    public Set<Ideia> ideias = new HashSet<>();
-
-    public Set<Ideia> getIdeias() {
-        return ideias;
-    }
-    public void setIdeias(Set<Ideia> ideias) {
-        this.ideias = ideias;
-    }
-
-    @Override
-    public String toString() {
-        return "Categoria [id=" + id + ", nome=" + nome + ", ideias=" + ideias
-                + "]";
-    }*/
 }

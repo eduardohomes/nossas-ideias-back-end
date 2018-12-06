@@ -7,7 +7,7 @@ public class Ideia  extends AbstractEntity{
 
     private String nome;
     private String descricao;
-    private String comentarioAvaliador;
+    private String comentario_Avaliador;
     private String ativa;
     private String situacao;
     private Long idCategoria;
@@ -36,12 +36,12 @@ public class Ideia  extends AbstractEntity{
         this.descricao = descricao;
     }
 
-    public String getComentarioAvaliador() {
-        return comentarioAvaliador;
+    public String getComentario_Avaliador() {
+        return comentario_Avaliador;
     }
 
-    public void setComentarioAvaliador(String comentarioAvaliador) {
-        this.comentarioAvaliador = comentarioAvaliador;
+    public void setComentario_Avaliador(String comentario_Avaliador) {
+        this.comentario_Avaliador = comentario_Avaliador;
     }
 
     public String getAtiva() {
@@ -59,4 +59,5 @@ public class Ideia  extends AbstractEntity{
     public void setIdCategoria(Long idCategoria) {
         this.idCategoria = idCategoria;
     }
+
 }

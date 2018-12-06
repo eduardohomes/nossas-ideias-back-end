@@ -3,9 +3,7 @@ package com.br.nossas.ideias.controller;
 import com.br.nossas.ideias.error.ResourceNotFoundExcepction;
 import com.br.nossas.ideias.model.Favorita;
 import com.br.nossas.ideias.model.Ideia;
-import com.br.nossas.ideias.repository.CategoriaRepository;
-import com.br.nossas.ideias.repository.FavoritaRepository;
-import com.br.nossas.ideias.repository.IdeiaRepository;
+import com.br.nossas.ideias.repository.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -15,26 +13,24 @@ import java.util.Optional;
 @Controller
 public class IdeiaController {
 
-    private final AutenticarController autenticarController;
     private final IdeiaRepository ideiaRepository;
     private final FavoritaRepository favoritaRepository;
     private final CategoriaRepository categoriaRepository;
-    private final UserController userController;
-    private final JSONArray jsonArrayTodasIdeias = new JSONArray();
-    private final JSONArray jsonArrayUltimasIdeiasCadastradas = new JSONArray();
-    private final JSONArray jsonArrayMaisVotadas = new JSONArray();
+    private final VotoRepository votoRepository;
+    private final ComentarioRepository comentarioRepository;
 
-    public IdeiaController(AutenticarController autenticarController, IdeiaRepository ideiaRepository, FavoritaRepository favoritaRepository, CategoriaRepository categoriaRepository, UserController userController) {
-        this.autenticarController = autenticarController;
+    public IdeiaController(IdeiaRepository ideiaRepository, FavoritaRepository favoritaRepository, CategoriaRepository categoriaRepository, VotoRepository votoRepository1, ComentarioRepository comentarioRepository) {
         this.ideiaRepository = ideiaRepository;
         this.favoritaRepository = favoritaRepository;
         this.categoriaRepository = categoriaRepository;
-        this.userController = userController;
+        this.votoRepository = votoRepository1;
+        this.comentarioRepository = comentarioRepository;
     }
 
-    public JSONArray listarFavoritas(){
+    public JSONArray listarFavoritas(Long idUser){
+        JSONArray jsonArrayFavoritas = new JSONArray();
 
-        int tamanho = ideiaRepository.findAll().size();
+        int tamanho = ideiaRepository.findByFavoritas(idUser).size();
 
         if(tamanho > 0) {
 
@@ -42,78 +38,113 @@ public class IdeiaController {
 
                 JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("id", ideiaRepository.findAll().get(i).getId());
-                jsonObject.put("nome", ideiaRepository.findAll().get(i).getNome());
-                jsonObject.put("descricao", ideiaRepository.findAll().get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findAll().get(i).getComentarioAvaliador());
-                jsonObject.put("ativa", ideiaRepository.findAll().get(i).getAtiva());
-                jsonObject.put("situacao", ideiaRepository.findAll().get(i).getSituacao());
+                jsonObject.put("id", ideiaRepository.findByFavoritas(idUser).get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByFavoritas(idUser).get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByFavoritas(idUser).get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByFavoritas(idUser).get(i).getComentario_Avaliador());
+                jsonObject.put("ativa", ideiaRepository.findByFavoritas(idUser).get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByFavoritas(idUser).get(i).getSituacao());
 
-                long id = ideiaRepository.findAll().get(i).getId();
+                long idIdeia = ideiaRepository.findByEmAlta().get(i).getId();
+                long tamanhoVotoSim = votoRepository.countByIdIdeiaAndVoto(idIdeia, "S");
+                long tamanhoVotoNao = votoRepository.countByIdIdeiaAndVoto(idIdeia, "N");
+                long tamanhoComentario = comentarioRepository.countByIdIdeia(idIdeia);
 
-                int x = 0;
-                String marcada = "";
-
-                int tamanhoFavorita = favoritaRepository.findAll().size();
-
-                for (int j = x; j < tamanhoFavorita; j++) {
-                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
-                        marcada =  favoritaRepository.findAll().get(j).getMarcada();
-                        if (marcada.equals("N")) {
-                            jsonObject.put("marcada", marcada);
-                        } else {
-                            jsonObject.put("marcada", "S");
-                        }
-                    }
+                if(tamanhoVotoSim > 0 ) {
+                    jsonObject.put("quantidadeSim", tamanhoVotoSim);
+                } else {
+                    jsonObject.put("quantidadeSim", 0);
                 }
-                jsonArrayTodasIdeias.add(jsonObject);
+                if(tamanhoVotoNao > 0 ) {
+                    jsonObject.put("quantidadeNao", tamanhoVotoNao);
+                } else {
+                    jsonObject.put("quantidadeNao", 0);
+                }
+                if(tamanhoComentario > 0 ) {
+                    jsonObject.put("quantidadeComentario", tamanhoComentario);
+                } else {
+                    jsonObject.put("quantidadeComentario", 0);
+                }
+
+                jsonArrayFavoritas.add(jsonObject);
             }
         }
-        return jsonArrayTodasIdeias;
+
+        return jsonArrayFavoritas;
+    }
+
+    public JSONArray listaPendenteAvaliacao(){
+        JSONArray jsonArrayPendenteAvaliacao = new JSONArray();
+        int tamanho = ideiaRepository.findByPendenteAvaliacao().size();
+
+        if(tamanho > 0) {
+
+            for (int i = 0; i < tamanho; i++) {
+
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.put("id", ideiaRepository.findByPendenteAvaliacao().get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByPendenteAvaliacao().get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByPendenteAvaliacao().get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByPendenteAvaliacao().get(i).getComentario_Avaliador());
+                jsonObject.put("ativa", ideiaRepository.findByPendenteAvaliacao().get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByPendenteAvaliacao().get(i).getSituacao());
+
+                jsonArrayPendenteAvaliacao.add(jsonObject);
+            }
+        }
+        return jsonArrayPendenteAvaliacao;
     }
 
     public JSONArray listaUltimasIdeias(){
+        JSONArray jsonArrayUltimasIdeias = new JSONArray();
 
         int tamanho = ideiaRepository.findByUltimasIdeias().size();
 
         if(tamanho > 0) {
 
             for (int i = 0; i < tamanho; i++) {
-
                 JSONObject jsonObject = new JSONObject();
 
                 jsonObject.put("id", ideiaRepository.findByUltimasIdeias().get(i).getId());
-                jsonObject.put("nome", ideiaRepository.findByUltimasIdeias().get(i).getNome());
-                jsonObject.put("descricao", ideiaRepository.findByUltimasIdeias().get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findByUltimasIdeias().get(i).getComentarioAvaliador());
                 jsonObject.put("ativa", ideiaRepository.findByUltimasIdeias().get(i).getAtiva());
+                jsonObject.put("comentario_avaliador",ideiaRepository.findByUltimasIdeias().get(i).getComentario_Avaliador());
+                jsonObject.put("descricao",ideiaRepository.findByUltimasIdeias().get(i).getDescricao());
+                jsonObject.put("nome", ideiaRepository.findByUltimasIdeias().get(i).getNome());
                 jsonObject.put("situacao", ideiaRepository.findByUltimasIdeias().get(i).getSituacao());
+                jsonObject.put("id_categoria", ideiaRepository.findByUltimasIdeias().get(i).getIdCategoria());
 
-                long id = ideiaRepository.findByUltimasIdeias().get(i).getId();
+                Long idIdeia = ideiaRepository.findByUltimasIdeias().get(i).getId();
+                long tamanhoVotoSim = votoRepository.countByIdIdeiaAndVoto(idIdeia, "S");
+                long tamanhoVotoNao = votoRepository.countByIdIdeiaAndVoto(idIdeia, "N");
+                long tamanhoComentario = comentarioRepository.countByIdIdeia(idIdeia);
 
-                int x = 0;
-                String marcada = "";
-
-                int iFavorita = favoritaRepository.findAll().size();
-
-                for (int j = x; j < iFavorita; j++) {
-                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
-                        marcada =  favoritaRepository.findAll().get(j).getMarcada();
-                        if (marcada.equals("N")) {
-                            jsonObject.put("marcada", marcada);
-                        } else {
-                            jsonObject.put("marcada", "S");
-                        }
-                    }
+                if(tamanhoVotoSim > 0 ) {
+                    jsonObject.put("quantidadeSim", tamanhoVotoSim);
+                } else {
+                    jsonObject.put("quantidadeSim", 0);
                 }
-                jsonArrayUltimasIdeiasCadastradas.add(jsonObject);
+                if(tamanhoVotoNao > 0 ) {
+                    jsonObject.put("quantidadeNao", tamanhoVotoNao);
+                } else {
+                    jsonObject.put("quantidadeNao", 0);
+                }
+                if(tamanhoComentario > 0 ) {
+                    jsonObject.put("quantidadeComentario", tamanhoComentario);
+                } else {
+                    jsonObject.put("quantidadeComentario", 0);
+                }
+
+                jsonArrayUltimasIdeias.add(jsonObject);
             }
+
         }
-        return jsonArrayUltimasIdeiasCadastradas;
+
+        return jsonArrayUltimasIdeias;
     }
 
     public JSONArray listaEmAlta(){
-
+        JSONArray jsonArrayMaisVotadas = new JSONArray();
         int tamanho = ideiaRepository.findByEmAlta().size();
 
         if(tamanho > 0) {
@@ -125,11 +156,30 @@ public class IdeiaController {
                 jsonObject.put("id", ideiaRepository.findByEmAlta().get(i).getId());
                 jsonObject.put("nome", ideiaRepository.findByEmAlta().get(i).getNome());
                 jsonObject.put("descricao", ideiaRepository.findByEmAlta().get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findByEmAlta().get(i).getComentarioAvaliador());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByEmAlta().get(i).getComentario_Avaliador());
                 jsonObject.put("ativa", ideiaRepository.findByEmAlta().get(i).getAtiva());
                 jsonObject.put("situacao", ideiaRepository.findByEmAlta().get(i).getSituacao());
 
-                long id = ideiaRepository.findByEmAlta().get(i).getId();
+                long idIdeia = ideiaRepository.findByEmAlta().get(i).getId();
+                long tamanhoVotoSim = votoRepository.countByIdIdeiaAndVoto(idIdeia, "S");
+                long tamanhoVotoNao = votoRepository.countByIdIdeiaAndVoto(idIdeia, "N");
+                long tamanhoComentario = comentarioRepository.countByIdIdeia(idIdeia);
+
+                if(tamanhoVotoSim > 0 ) {
+                    jsonObject.put("quantidadeSim", tamanhoVotoSim);
+                } else {
+                    jsonObject.put("quantidadeSim", 0);
+                }
+                if(tamanhoVotoNao > 0 ) {
+                    jsonObject.put("quantidadeNao", tamanhoVotoNao);
+                } else {
+                    jsonObject.put("quantidadeNao", 0);
+                }
+                if(tamanhoComentario > 0 ) {
+                    jsonObject.put("quantidadeComentario", tamanhoComentario);
+                } else {
+                    jsonObject.put("quantidadeComentario", 0);
+                }
 
                 int x = 0;
                 String marcada = "";
@@ -137,7 +187,7 @@ public class IdeiaController {
                 int iFavorita = favoritaRepository.findAll().size();
 
                 for (int j = x; j < iFavorita; j++) {
-                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
+                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(idIdeia)) {
                         marcada =  favoritaRepository.findAll().get(j).getMarcada();
                         if (marcada.equals("N")) {
                             jsonObject.put("marcada", marcada);
@@ -161,43 +211,23 @@ public class IdeiaController {
         return ideia;
     }
 
-    public JSONArray listaBuscaAssunto(String nome){
-
-        int tamanho = ideiaRepository.findByIdeia(nome).size();
+    public JSONArray listaBuscaAssunto(String nome, Long idCategoria){
+        JSONArray jsonArrayPorAssunto = new JSONArray();
+        int tamanho = ideiaRepository.buscaPorNomeCategoria(idCategoria,nome).size();
 
         if(tamanho > 0) {
 
             for (int i = 0; i < tamanho; i++) {
-
                 JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("id", ideiaRepository.findByIdeia(nome).get(i).getId());
-                jsonObject.put("nome", ideiaRepository.findByIdeia(nome).get(i).getNome());
-                jsonObject.put("descricao", ideiaRepository.findByIdeia(nome).get(i).getDescricao());
-                jsonObject.put("comentarioAvaliador", ideiaRepository.findByIdeia(nome).get(i).getComentarioAvaliador());
-                jsonObject.put("ativa", ideiaRepository.findByIdeia(nome).get(i).getAtiva());
-                jsonObject.put("situacao", ideiaRepository.findByIdeia(nome).get(i).getSituacao());
+                jsonObject.put("nome", ideiaRepository.buscaPorNomeCategoria(idCategoria,nome).get(i).getNome());
+                jsonObject.put("situacao", ideiaRepository.buscaPorNomeCategoria(idCategoria,nome).get(i).getSituacao());
+                jsonObject.put("descricao", ideiaRepository.buscaPorNomeCategoria(idCategoria,nome).get(i).getDescricao());
 
-                long id = ideiaRepository.findByIdeia(nome).get(i).getId();
-
-                int x = 0;
-                String marcada = "";
-
-                int iFavorita = favoritaRepository.findAll().size();
-
-                for (int j = x; j < iFavorita; j++) {
-                    if(favoritaRepository.findAll().get(j).getIdIdeia().equals(id)) {
-                        marcada =  favoritaRepository.findAll().get(j).getMarcada();
-                        if (marcada.equals("N")) {
-                            jsonObject.put("marcada", marcada);
-                        } else {
-                            jsonObject.put("marcada", "S");
-                        }
-                    }
-                }jsonArrayMaisVotadas.add(jsonObject);
+                jsonArrayPorAssunto.add(jsonObject);
             }
         }
-        return jsonArrayMaisVotadas;
+        return jsonArrayPorAssunto;
     }
 
     public void salvaIdeia(Ideia ideia, Long idUsuario) {
@@ -212,14 +242,50 @@ public class IdeiaController {
         favoritaRepository.save(favorita);
     }
 
-    public void atualizarIdeia(Ideia ideia, Long idUsuario) {
-
-        if (ideia.getComentarioAvaliador() != null) {
-            throw new ResourceNotFoundExcepction("Comentario Avaliador nao preenchido");
-        } else {
-            ideiaRepository.save(ideia);
-        }
+    public void atualizarIdeia(Ideia ideia) {
+        ideiaRepository.save(ideia);
     }
-    
 
+    public JSONArray listaPorCategoria(){
+        JSONArray jsonArrayPorCategorias = new JSONArray();
+        int tamanho = categoriaRepository.listaPorCategoria().size();
+
+        if(tamanho > 0) {
+
+            for (int i = 0; i < tamanho; i++) {
+
+                JSONObject jsonObject = new JSONObject();
+
+                Object[] obj = (Object[]) categoriaRepository.listaPorCategoria().get(i);
+
+                jsonObject.put("id", obj[0]);
+                jsonObject.put("nome", obj[1]);
+                jsonObject.put("quantidade", obj[2]);
+                jsonArrayPorCategorias.add(jsonObject);
+            }
+        }
+        return jsonArrayPorCategorias;
+    }
+
+    public JSONArray buscaPorNome(String nome){
+        JSONArray jsonArrayPorAssunto = new JSONArray();
+        int tamanho = ideiaRepository.findByNomeContaining(nome).size();
+
+        if(tamanho > 0) {
+
+            for (int i = 0; i < tamanho; i++) {
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.put("id", ideiaRepository.findByNomeContaining(nome).get(i).getId());
+                jsonObject.put("nome", ideiaRepository.findByNomeContaining(nome).get(i).getNome());
+                jsonObject.put("descricao", ideiaRepository.findByNomeContaining(nome).get(i).getDescricao());
+                jsonObject.put("comentarioAvaliador", ideiaRepository.findByNomeContaining(nome).get(i).getComentario_Avaliador());
+                jsonObject.put("ativa", ideiaRepository.findByNomeContaining(nome).get(i).getAtiva());
+                jsonObject.put("situacao", ideiaRepository.findByNomeContaining(nome).get(i).getSituacao());
+
+                jsonArrayPorAssunto.add(jsonObject);
+            }
+        }
+        return jsonArrayPorAssunto;
+    }
 }

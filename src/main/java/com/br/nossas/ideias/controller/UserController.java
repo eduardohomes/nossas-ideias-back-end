@@ -4,8 +4,6 @@ import com.br.nossas.ideias.model.User;
 import com.br.nossas.ideias.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 
-import java.text.Format;
-
 @Controller
 public class UserController {
 
@@ -31,6 +29,12 @@ public class UserController {
         User username = userDAO.findByToken(token);
 
         return username.getUsername();
+    }
+    public Long getId(String token) {
+
+        User username = userDAO.findByToken(token);
+
+        return username.getId();
     }
 
 }

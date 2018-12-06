@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("api//comentarios")
+@RequestMapping("api/comentarios")
 public class ComentarioEndpoint {
 
     private final ComentarioRepository comentarioDAO;
