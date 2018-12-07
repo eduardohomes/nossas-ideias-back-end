@@ -14,6 +14,7 @@ public interface VotoRepository extends JpaRepository<Voto, Long> {
     @Query(value = "select vo.* from nossaideia.voto vo where vo.id_user = ?1 and vo.id_ideia = ?2", nativeQuery = true)
     List<String> validaVoto(Long idUser, Long idIdeia);
 
+    @Query(value = "select count(*) from nossaideia.voto where id_ideia = ?1 and voto = ?2", nativeQuery = true)
     long countByIdIdeiaAndVoto(Long idIdeia, String voto);
 
     long countByIdIdeia(Long idIdeia);

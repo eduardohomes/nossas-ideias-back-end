@@ -45,7 +45,8 @@ public class IdeiaController {
                 jsonObject.put("ativa", ideiaRepository.findByFavoritas(idUser).get(i).getAtiva());
                 jsonObject.put("situacao", ideiaRepository.findByFavoritas(idUser).get(i).getSituacao());
 
-                long idIdeia = ideiaRepository.findByEmAlta().get(i).getId();
+                long idIdeia = ideiaRepository.findByFavoritas(idUser).get(i).getId();
+
                 long tamanhoVotoSim = votoRepository.countByIdIdeiaAndVoto(idIdeia, "S");
                 long tamanhoVotoNao = votoRepository.countByIdIdeiaAndVoto(idIdeia, "N");
                 long tamanhoComentario = comentarioRepository.countByIdIdeia(idIdeia);

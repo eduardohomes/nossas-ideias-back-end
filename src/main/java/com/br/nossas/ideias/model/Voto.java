@@ -36,13 +36,4 @@ public class Voto extends AbstractEntity{
         this.idIdeia = idIdeia;
     }
 
-    private Long quantidade;
-
-    public Long getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Long quantidade) {
-        this.quantidade = quantidade;
-    }
 }

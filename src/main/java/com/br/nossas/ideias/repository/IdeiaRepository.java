@@ -13,7 +13,8 @@ public interface IdeiaRepository extends JpaRepository<Ideia, Long> {
             "right join nossaideia.ideia ide\n" +
             "on voto.id_ideia = ide.id\n" +
             "where voto.voto = 'S'\n" +
-            "group by voto.id_ideia \n" +
+            "and ide.situacao = 'Em Execução'\n" +
+            "group by voto.id_ideia\n" +
             "having count(voto.id_ideia)>0\n" +
             "ORDER BY count(voto.id_ideia) desc LIMIT 3", nativeQuery = true)
     List<Ideia> findByEmAlta();
@@ -21,8 +22,10 @@ public interface IdeiaRepository extends JpaRepository<Ideia, Long> {
     @Query(value = "select ide.* from nossaideia.ideia ide join nossaideia.favorita favo on ide.id = favo.id_ideia where id_user = ?1 and marcada = 'S'", nativeQuery = true)
     List<Ideia> findByFavoritas(Long idUser);
 
-    @Query(value ="SELECT * FROM nossaideia.ideia where situacao <>  +\n" +
-            "            'Aberta' ORDER BY id DESC LIMIT 5" , nativeQuery = true)
+    @Query(value ="SELECT * FROM nossaideia.ideia \n" +
+            "where situacao = 'Em Colaboração' \n" +
+            "or situacao = 'Em Execução'\n" +
+            "ORDER BY id DESC LIMIT 5" , nativeQuery = true)
     List<Ideia> findByUltimasIdeias();
 
     @Query(value = "select * from nossaideia.ideia where nome like '%' || ?1 || '%'",nativeQuery = true)
