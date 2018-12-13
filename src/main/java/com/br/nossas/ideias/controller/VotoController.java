@@ -44,21 +44,19 @@ public class VotoController {
         return jsonArrayVotos;
     }
 
-    public JSONObject validaVoto(Long idUsuario, Voto voto) {
+    public boolean validaVoto(Long idUsuario, Voto voto) {
 
-        JSONObject jsonObject = new JSONObject();
-
-        boolean valida;
+        boolean valida = false;
         int buscaVoto = votoRepository.validaVoto(idUsuario,voto.getIdIdeia()).size();
 
         if (buscaVoto >= 1) {
-            jsonObject.put("Votou", "Voce ja votou");
+            return valida;
         } else {
-            jsonObject.put("Votou", "Voto salvo");
             voto.setIdUser(idUsuario);
             votoRepository.save(voto);
+            valida = true;
+            return valida;
         }
-        return jsonObject;
     }
 
     public Long listaVotosPorIdeia(Long idIdeia) {

@@ -12,9 +12,10 @@ import org.springframework.stereotype.Controller;
 public class AutenticarController {
 
     private User user;
+    private User usuario;
+    private int isAdmin;
     private final UserRepository userDAO;
     private final JSONObject jsonObject = new JSONObject();
-    private final JSONArray jsonArrayToken = new JSONArray();
 
     public AutenticarController(UserRepository userDAO) {
         this.userDAO = userDAO;
@@ -22,25 +23,36 @@ public class AutenticarController {
 
     public JSONObject autenticaUsuarioLogin(User user) {
 
-        User usuario = userDAO.findByUsername(user.getUsername());
-        int isAdmin;
+        if (user.getFacebook() != null ) {
+            usuario = userDAO.findByFacebook(user.getFacebook());
+            String token = PasswordEncoderService.geraToken(usuario.getPassword());
+            if(usuario.isAdmin()) {
+                isAdmin = 1;
+            } else {
+                isAdmin = 2;
+            }
 
-        if (usuario == null) {
-            throw new ResourceNotFoundExcepction("Dados invalido");
+            usuario.setToken(token);
+            userDAO.save(usuario);
         } else {
-            boolean senhaValida = PasswordEncoderService.ValidaSenha(usuario.getPassword(),  user.getPassword());
-            if (!senhaValida) {
+            usuario = userDAO.findByUsername(user.getUsername());
+            if (usuario.getPassword() == null) {
                 throw new ResourceNotFoundExcepction("Dados invalido");
             } else {
-                String token = PasswordEncoderService.geraToken(usuario.getPassword());
-                if(usuario.isAdmin()) {
-                    isAdmin = 1;
+                boolean senhaValida = PasswordEncoderService.ValidaSenha(usuario.getPassword(),  user.getPassword());
+                if (!senhaValida) {
+                    throw new ResourceNotFoundExcepction("Dados invalido");
                 } else {
-                    isAdmin = 2;
-                }
+                    String token = PasswordEncoderService.geraToken(usuario.getPassword());
+                    if(usuario.isAdmin()) {
+                        isAdmin = 1;
+                    } else {
+                        isAdmin = 2;
+                    }
 
-                usuario.setToken(token);
-                userDAO.save(usuario);
+                    usuario.setToken(token);
+                    userDAO.save(usuario);
+                }
             }
         }
 

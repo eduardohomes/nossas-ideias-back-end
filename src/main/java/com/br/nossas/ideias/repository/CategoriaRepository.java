@@ -8,11 +8,12 @@ import java.util.List;
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
-    @Query(value = "select cate.*, count(*) from nossaideia.ideia ide " +
-            "join nossaideia.categoria cate " +
-            "on ide.id_categoria = cate.id " +
-            "where ide.situacao <> 'Aberta' " +
-            "and ide.situacao <> 'Rejeitada' " +
-            "group by ide.id_categoria", nativeQuery = true)
+    @Query(value = "select cate.nome,\n" +
+            "       (select count(*) \n" +
+            "        from nossaideia.ideia ide \n" +
+            "        where ide.id_categoria = cate.id\n" +
+            "          and ide.situacao <> 'Aberta' \n" +
+            "          and ide.situacao <> 'Rejeitada') as quantidade\n" +
+            "       from nossaideia.categoria cate", nativeQuery = true)
     List<Object> listaPorCategoria();
 }

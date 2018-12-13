@@ -259,9 +259,8 @@ public class IdeiaController {
 
                 Object[] obj = (Object[]) categoriaRepository.listaPorCategoria().get(i);
 
-                jsonObject.put("id", obj[0]);
-                jsonObject.put("nome", obj[1]);
-                jsonObject.put("quantidade", obj[2]);
+                jsonObject.put("nome", obj[0]);
+                jsonObject.put("quantidade",obj[1]);
                 jsonArrayPorCategorias.add(jsonObject);
             }
         }

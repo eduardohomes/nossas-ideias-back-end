@@ -25,12 +25,6 @@ public class FavoritaEndpoint {
         this.ideiaController = ideiaController;
     }
 
-    /*@GetMapping
-    @CrossOrigin
-    public ResponseEntity<?> listAll() {
-        return new ResponseEntity<>(favoritaDAO.findAll(),HttpStatus.OK);
-    }*/
-
     @PostMapping
     @CrossOrigin
     @Transactional(rollbackFor = Exception.class)

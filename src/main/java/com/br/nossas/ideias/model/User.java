@@ -11,6 +11,7 @@ public class User extends AbstractEntity {
     private String nome;
     private boolean admin;
     private String token;
+    private Long facebook;
 
     public String getUsername() {
         return username;
@@ -52,4 +53,11 @@ public class User extends AbstractEntity {
         this.admin = admin;
     }
 
+    public Long getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(Long facebook) {
+        this.facebook = facebook;
+    }
 }

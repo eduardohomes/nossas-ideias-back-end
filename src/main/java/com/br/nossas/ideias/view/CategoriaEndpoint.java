@@ -20,9 +20,5 @@ public class CategoriaEndpoint {
     public ResponseEntity<?> listAll() {
             return new ResponseEntity<>(categoriaRepositoryDAO.findAll(),HttpStatus.OK);
     }
-    /*@GetMapping(value = "/listaMaisVotadas")
-    public ResponseEntity<?> maisVotadas() {
-        return new ResponseEntity<>(categoriaRepositoryDAO.,HttpStatus.OK);
-    }*/
 
 }

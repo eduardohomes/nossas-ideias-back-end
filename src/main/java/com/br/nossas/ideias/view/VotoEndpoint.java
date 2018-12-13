@@ -18,7 +18,6 @@ public class VotoEndpoint {
     private final VotoController votoController;
     private final AutenticarController autenticarController;
 
-
     public VotoEndpoint(VotoController votoController, AutenticarController autenticarController) {
         this.votoController = votoController;
         this.autenticarController = autenticarController;
@@ -49,7 +48,6 @@ public class VotoEndpoint {
         }
     }
 
-
     @PostMapping
     @CrossOrigin
     @Transactional(rollbackFor = Exception.class)
@@ -58,7 +56,14 @@ public class VotoEndpoint {
         Long idUserLogado = autenticarController.autenticaUsuarioLogado(token).getId();
 
         if (idUserLogado != null) {
-            return new ResponseEntity<>(votoController.validaVoto(idUserLogado, voto), HttpStatus.OK);
+
+            boolean teste = votoController.validaVoto(idUserLogado, voto);
+
+            if (teste) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
         } else {
             throw new ResourceNotFoundExcepction("Usuario nao encontrado");
         }
